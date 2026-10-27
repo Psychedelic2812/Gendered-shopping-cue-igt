@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gendered Shopping IGT</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main class="container">
+        <header class="page-header">
+            <h1>Gendered Shopping IGT</h1>
+            <p>Modified Iowa Gambling Task</p>
+        </header>
+
+        <section class="status-bar">
+            <div>
+                <span>Trial</span>
+                <strong id="trialNumber">-</strong>
+            </div>
+
+            <div>
+                <span>Balance</span>
+                <strong id="balance">₹1,90,000</strong>
+            </div>
+        </section>
+
+        <p id="previewMessage" role="status" aria-live="polite">
+            Click Start to begin.
+        </p>
+
+        <section class="instructions">
+            <p id="instructionsText">
+                You start with ₹1,90,000. On each turn an arrow will point to one deck.
+                Press PLAY (A key) to take a card from that deck, which may win or lose money,
+                or PASS (L key) to skip it. You have 4 seconds to decide.
+                Try to finish with as much money as possible. Click Start when you are ready.
+            </p>
+        </section>
+
+        <section class="deck-area" aria-label="Four IGT decks">
+
+            <div class="deck" data-deck="1">
+                <div class="arrow" aria-hidden="true">▼</div>
+                <div class="deck-image">
+                    <span>Image 1</span>
+                </div>
+                <h2>Deck 1</h2>
+            </div>
+
+            <div class="deck" data-deck="2">
+                <div class="arrow" aria-hidden="true">▼</div>
+                <div class="deck-image">
+                    <span>Image 2</span>
+                </div>
+                <h2>Deck 2</h2>
+            </div>
+
+            <div class="deck" data-deck="3">
+                <div class="arrow" aria-hidden="true">▼</div>
+                <div class="deck-image">
+                    <span>Image 3</span>
+                </div>
+                <h2>Deck 3</h2>
+            </div>
+
+            <div class="deck" data-deck="4">
+                <div class="arrow" aria-hidden="true">▼</div>
+                <div class="deck-image">
+                    <span>Image 4</span>
+                </div>
+                <h2>Deck 4</h2>
+            </div>
+
+        </section>
+
+        <section class="controls">
+            <button id="startButton" type="button">Start</button>
+            <button id="playButton" type="button" hidden>Play (A)</button>
+            <button id="passButton" type="button" hidden>Pass (L)</button>
+        </section>
+
+        <footer>
+            Research prototype only. No participant data is being collected.
+        </footer>
+    </main>
+
+    <script src="experiment.js"></script>
+</body>
+</html>

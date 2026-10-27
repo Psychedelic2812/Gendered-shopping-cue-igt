@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Setup - Gendered Shopping IGT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .setup-card {
+            background: white;
+            border: 3px solid #292929;
+            border-radius: 10px;
+            padding: 14px 22px 18px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .setup-card h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 12px 0 8px;
+        }
+
+        .choices {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .choice {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+            cursor: pointer;
+        }
+
+        .choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .choice-body {
+            display: block;
+            height: 100%;
+            padding: 12px;
+            border: 3px solid #dedbd4;
+            border-radius: 10px;
+            background: #f4f1eb;
+        }
+
+        .choice-title {
+            display: block;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .choice-text {
+            display: block;
+            margin-top: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #444444;
+        }
+
+        .choice input:checked + .choice-body {
+            border-color: #d5aa24;
+            box-shadow: 0 0 0 5px #f3df91;
+            background: white;
+        }
+
+        .choice input:focus-visible + .choice-body {
+            outline: 3px solid #454545;
+            outline-offset: 3px;
+        }
+
+        #participantId,
+        #linkBox {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            border: 3px solid #dedbd4;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        #participantId { width: 280px; }
+        #linkBox { width: 100%; font-size: 15px; }
+
+        .summary {
+            margin: 16px auto 4px;
+            padding: 12px;
+            background: #f3df91;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .summary strong { font-size: 24px; font-weight: 800; }
+
+        .setup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <header class="page-header">
+            <h1>Gendered Shopping IGT</h1>
+            <p>Researcher Setup</p>
+        </header>
+
+        <section class="setup-card">
+
+            <h2>1. Choose the group</h2>
+            <div class="choices">
+                <label class="choice">
+                    <input type="radio" name="group" value="G1" checked>
+                    <span class="choice-body">
+                        <span class="choice-title">Group 1</span>
+                        <span class="choice-text">Shopping cues on the 2 advantageous decks. Neutral images on the 2 disadvantageous decks.</span>
+                    </span>
+                </label>
+
+                <label class="choice">
+                    <input type="radio" name="group" value="G2">
+                    <span class="choice-body">
+                        <span class="choice-title">Group 2</span>
+                        <span class="choice-text">Shopping cues on the 2 disadvantageous decks. Neutral images on the 2 advantageous decks.</span>
+                    </span>
+                </label>
+            </div>
+
+            <h2>2. Choose the variation</h2>
+            <div class="choices">
+                <label class="choice">
+                    <input type="radio" name="variation" value="V1" checked>
+                    <span class="choice-body">
+                        <span class="choice-title">Variation 1</span>
+                        <span class="choice-text">Male shopping cues</span>
+                    </span>
+                </label>
+
+                <label class="choice">
+                    <input type="radio" name="variation" value="V2">
+                    <span class="choice-body">
+                        <span class="choice-title">Variation 2</span>
+                        <span class="choice-text">Female shopping cues</span>
+                    </span>
+                </label>
+            </div>
+
+            <h2>3. Participant ID (optional)</h2>
+            <input id="participantId" type="text" placeholder="e.g. P001 (blank = automatic)" autocomplete="off">
+
+            <div class="summary" id="summary"></div>
+
+            <h2>Link for this setup</h2>
+            <input id="linkBox" type="text" readonly>
+
+            <div class="setup-buttons">
+                <button id="startExperiment" type="button">Start experiment</button>
+                <button id="copyLink" type="button">Copy link</button>
+            </div>
+        </section>
+
+        <footer>
+            Researcher page only. Do not show this page to participants.
+        </footer>
+    </main>
+
+    <script>
+        const summaryBox = document.getElementById("summary");
+        const linkBox = document.getElementById("linkBox");
+        const idBox = document.getElementById("participantId");
+        const startBtn = document.getElementById("startExperiment");
+        const copyBtn = document.getElementById("copyLink");
+
+        function chosen(name) {
+            return document.querySelector('input[name="' + name + '"]:checked').value;
+        }
+
+        function buildLink() {
+            const condition = chosen("group") + chosen("variation");
+            let link = "index.html?condition=" + condition;
+            const pid = idBox.value.trim();
+            if (pid) link += "&pid=" + encodeURIComponent(pid);
+            return link;
+        }
+
+        function refresh() {
+            const group = chosen("group");
+            const variation = chosen("variation");
+            const cue = variation === "V1" ? "Male" : "Female";
+            const shoppingDecks = group === "G1"
+                ? "the 2 advantageous decks (Decks 3 and 4)"
+                : "the 2 disadvantageous decks (Decks 1 and 2)";
+            const neutralDecks = group === "G1"
+                ? "the 2 disadvantageous decks (Decks 1 and 2)"
+                : "the 2 advantageous decks (Decks 3 and 4)";
+
+            summaryBox.innerHTML =
+                "<strong>" + group + variation + "</strong><br>" +
+                cue + " shopping cues on " + shoppingDecks + "<br>" +
+                "Neutral images on " + neutralDecks;
+
+            linkBox.value = new URL(buildLink(), window.location.href).href;
+        }
+
+        document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+            radio.addEventListener("change", refresh);
+        });
+        idBox.addEventListener("input", refresh);
+
+        startBtn.addEventListener("click", function () {
+            window.location.href = buildLink();
+        });
+
+        copyBtn.addEventListener("click", function () {
+            linkBox.select();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(linkBox.value);
+            } else {
+                document.execCommand("copy");
+            }
+            copyBtn.textContent = "Copied!";
+            setTimeout(function () { copyBtn.textContent = "Copy link"; }, 1500);
+        });
+
+        refresh();
+    </script>
+</body>
+</html>
