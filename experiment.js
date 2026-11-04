@@ -6,7 +6,7 @@ const DECISION_TIME = 4000;      // 4 seconds; no response = Pass
 const FEEDBACK_TIME = 1500;      // how long the result is shown (the picture stays visible too)
 const IMAGES_PER_DECK = 30;
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycby4Ah3cScsKSIiqjGcqTN3pTdHD8uCDnOaCYe1TmMnahnvm5tNHV6WPwyFFLY5b1hXJ/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyJ4h-CdeczhPZWKx0isiOP_u7frQhdRgKbQZt7vlOrOQKxkffJAtaLQ1hiQGWJiIAz/exec";
 
 const IMAGE_ROOT = "assets";     // folder that holds shopping_male, shopping_female, neutral
 const IMAGE_EXTENSION = "png";   // your pictures are .png
@@ -66,20 +66,18 @@ const CONDITIONS = {
     G2V2: { cue: "female", shoppingDecks: [1, 2] }    // Group 2, female cues on bad decks
 };
 
-// Choose the version with the web address, e.g. index.html?condition=G2V1&pid=P001
+// The version (condition) is now chosen automatically in flow.js, from the gender answer on the
+// demographics screen. For testing only, a link such as index.html?condition=G2V1&pid=TEST01
+// forces one version (and is not counted in the researcher page's totals).
 const urlParams = new URLSearchParams(window.location.search);
+const hasCondition = true;     // participants no longer need a personal link
+const forcedCondition = (urlParams.get("condition") || "").toUpperCase();
 
-// If the experiment is opened without a version, send the researcher to the setup page
-if (!urlParams.get("condition")) {
-    window.location.replace("researcher.html");
-}
-
-let conditionName = (urlParams.get("condition") || "G1V1").toUpperCase();
-if (!CONDITIONS[conditionName]) conditionName = "G1V1";
-const condition = CONDITIONS[conditionName];
-const groupName = conditionName.substring(0, 2);       // G1 or G2
-const variationName = conditionName.substring(2);      // V1 or V2
-const participantId = urlParams.get("pid") || ("P" + Math.floor(100000 + Math.random() * 900000));
+let conditionName = CONDITIONS[forcedCondition] ? forcedCondition : "G1V1";
+let condition = CONDITIONS[conditionName];
+let groupName = conditionName.substring(0, 2);       // G1 or G2
+let variationName = conditionName.substring(2);      // V1 or V2
+let participantId = urlParams.get("pid") || ("P" + Math.floor(100000 + Math.random() * 900000));
 
 // ---------- Page elements ----------
 const deckBoxes = document.querySelectorAll(".deck");
@@ -90,6 +88,13 @@ const instructionsText = document.getElementById("instructionsText");
 const startButton = document.getElementById("startButton");
 const playButton = document.getElementById("playButton");
 const passButton = document.getElementById("passButton");
+
+// Touch devices (phones, tablets) have no A / L keys, so show tap wording instead
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+if (isTouchDevice) {
+    playButton.textContent = "Play";
+    passButton.textContent = "Pass";
+}
 
 // ---------- Game state ----------
 let sequence = [];
@@ -106,7 +111,6 @@ let deckImageType = {};                         // shopping_male / shopping_fema
 let dataRows = [];                              // one row per trial, for the CSV
 let cumulativeDecisionMs = 0;                   // running total of decision time
 let taskStartTime = 0;                          // when the participant pressed Start
-let finalMessage = "";
 
 // ---------- Helpers ----------
 function shuffle(list) {
@@ -189,6 +193,16 @@ function checkAndPreloadImages() {
                 "| participant:", participantId);
 }
 
+// Sets the version for this participant and prepares the decks and pictures for it
+function applyCondition(name) {
+    conditionName = name;
+    condition = CONDITIONS[name];
+    groupName = name.substring(0, 2);
+    variationName = name.substring(2);
+    assignImages();
+    checkAndPreloadImages();
+}
+
 // ---------- Deck picture boxes ----------
 function deckImageBox(deck) {
     return document.querySelector('.deck[data-deck="' + deck + '"] .deck-image');
@@ -234,89 +248,6 @@ function showImage(deck, number) {
     box.appendChild(img);
 }
 
-// ---------- Data (CSV) ----------
-function csvCell(value) {
-    const text = String(value);
-    return /[",\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
-}
-
-function downloadCSV() {
-    if (dataRows.length === 0) return;
-    const headers = Object.keys(dataRows[0]);
-    const lines = [headers.join(",")];
-    dataRows.forEach(function (row) {
-        lines.push(headers.map(function (h) { return csvCell(row[h]); }).join(","));
-    });
-    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "igt_" + participantId + "_" + conditionName + ".csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-function setStatus(text) {
-    messageDisplay.textContent = finalMessage + (text ? "  |  " + text : "");
-}
-
-// Sends all trials to the researcher's Google Sheet. Safe to retry: the sheet
-// replaces any earlier upload from the same participant ID and condition.
-function uploadData() {
-    if (!SHEET_URL) {
-        setStatus("Online saving is not set up. Please download the CSV.");
-        return;
-    }
-    setStatus("Saving data...");
-    const payload = {
-        participant: participantId,
-        condition: conditionName,
-        finalBalance: balance,
-        sessionSeconds: Math.round((Date.now() - taskStartTime) / 1000),
-        rows: dataRows
-    };
-    fetch(SHEET_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },   // avoids a CORS preflight
-        body: JSON.stringify(payload)
-    })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-            if (!res.ok) throw new Error(res.error || "Unknown error");
-            setStatus("Data saved. Thank you!");
-            const retry = document.getElementById("retryButton");
-            if (retry) retry.hidden = true;
-        })
-        .catch(function (err) {
-            console.error("Upload failed:", err);
-            setStatus("Could not save automatically.");
-            addRetryButton();
-        });
-}
-
-function addRetryButton() {
-    let button = document.getElementById("retryButton");
-    if (!button) {
-        button = document.createElement("button");
-        button.id = "retryButton";
-        button.type = "button";
-        button.textContent = "Retry saving";
-        button.addEventListener("click", uploadData);
-        document.querySelector(".controls").appendChild(button);
-    }
-    button.hidden = false;
-}
-
-function addDownloadButton() {
-    if (document.getElementById("downloadButton")) return;
-    const button = document.createElement("button");
-    button.id = "downloadButton";
-    button.type = "button";
-    button.textContent = "Download data (CSV)";
-    button.addEventListener("click", downloadCSV);
-    document.querySelector(".controls").appendChild(button);
-}
-
 // ---------- Game flow ----------
 function startTask() {
     sequence = buildSequence();
@@ -327,7 +258,7 @@ function startTask() {
     startButton.hidden = true;
     playButton.hidden = false;
     passButton.hidden = false;
-    instructionsText.textContent = "Press A to PLAY or L to PASS.";
+    instructionsText.textContent = isTouchDevice ? "Tap PLAY or PASS." : "Press A to PLAY or L to PASS.";
     startTrial();
 }
 
@@ -423,10 +354,8 @@ function finishTask() {
     playButton.hidden = true;
     passButton.hidden = true;
     instructionsText.textContent = "The task is complete. Thank you!";
-    finalMessage = "Final balance: " + formatMoney(balance);
-    messageDisplay.textContent = finalMessage;
-    addDownloadButton();      // backup copy of the data
-    uploadData();             // automatic save to the researcher's Google Sheet
+    messageDisplay.textContent = "Final balance: " + formatMoney(balance);
+    if (typeof onTaskFinished === "function") onTaskFinished();   // defined in flow.js
 }
 
 // ---------- Starting screen ----------
@@ -434,14 +363,15 @@ balanceDisplay.textContent = formatMoney(START_AMOUNT);
 instructionsText.textContent =
     "You start with " + formatMoney(START_AMOUNT) + ". On each turn an arrow will point to one deck. " +
     "A picture will appear on that deck. " +
-    "Press PLAY (A key) to take a card from that deck, which may win or lose money, " +
-    "or PASS (L key) to skip it. You have 4 seconds to decide. " +
+    (isTouchDevice
+        ? "Tap PLAY to take a card from that deck, which may win or lose money, or tap PASS to skip it. "
+        : "Press PLAY (A key) to take a card from that deck, which may win or lose money, or PASS (L key) to skip it. ") +
+    "You have 4 seconds to decide. " +
     "Try to finish with as much money as possible. Click Start when you are ready.";
 document.querySelector("footer").textContent =
-    "Research prototype. Task data is saved to the researcher's sheet at the end of the task (a CSV copy can also be downloaded).";
+    "Your responses are anonymous and used only for academic purposes.";
 hideAllImages();
-assignImages();
-checkAndPreloadImages();
+if (CONDITIONS[forcedCondition]) applyCondition(forcedCondition);   // test links only; otherwise flow.js chooses
 
 // ---------- Buttons and keys ----------
 startButton.addEventListener("click", startTask);
