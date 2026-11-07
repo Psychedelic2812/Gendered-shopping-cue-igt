@@ -274,13 +274,10 @@ footer {
 .doc-card p { margin: 6px 0; }
 .doc-card .lead { font-size: 23px; font-weight: 700; }
 
-/* Emphasised key words: marker-pen highlight */
+/* Emphasised key words: bold only (no highlight) */
 .doc-card strong {
     font-weight: 800;
-    background: linear-gradient(transparent 52%, var(--yellow-soft) 52%);
-    padding: 0 2px;
 }
-.doc-card .lead strong, .doc-card h1 strong { background: none; padding: 0; }
 
 .steps { padding-left: 30px; margin: 10px 0; }
 .steps li { margin-bottom: 14px; padding-left: 6px; }

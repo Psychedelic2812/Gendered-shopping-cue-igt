@@ -43,7 +43,8 @@ STEP 1: SET UP THE GOOGLE SHEET SCRIPT (once)
 6. Three sheets appear automatically when the first participant arrives:
      Allocations   who was assigned which condition (this is the counter)
      Trials        one row per trial, with questionnaire answers repeated on every row
-     Participants  one summary row per participant (final balance, demographics, IGI items and total)
+     Participants  one summary row per participant (final balance, demographics, IGI items and total,
+                  Short UPPS-P raw items, five subscale scores and total)
 
 Whenever you edit Code.gs you must redeploy a New version for the change to take effect.
 

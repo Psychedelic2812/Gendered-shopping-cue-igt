@@ -1,4 +1,4 @@
-// Screen flow (version is allocated by the Google Sheet script after the demographics screen): information -> consent -> demographics -> card task -> final questions (IGI) -> end.
+// Screen flow (version is allocated by the Google Sheet script after the demographics screen): information -> consent -> demographics -> card task -> final questions (IGI, then Short UPPS-P) -> end.
 // Uses globals from experiment.js: hasCondition, urlParams, participantId, conditionName, groupName,
 // variationName, balance, dataRows, taskStartTime, SHEET_URL.
 
@@ -31,15 +31,15 @@ const DEMOGRAPHICS = [
 // Adapted Immediate Gratification Inventory (all items positively keyed; no reverse scoring)
 const IGI_ITEMS = [
     "I find it difficult to stick to healthy eating goals when tempting food is immediately available.",
-    "I tend to choose foods that satisfy me immediately rather than considering their long-term effects on my health.",
-    "I prioritize immediate physical comfort and pleasure over long-term goals.",
-    "When faced with a physically demanding chore, I choose immediate comfort rather than completing the task.",
-    "I prioritise the immediate benefits of my actions even when they may have negative consequences for my relationships in the long run.",
-    "I focus on the immediate benefits I get from my actions rather than their longer-term effects on others.",
-    "I prefer to spend my money on immediate pleasures rather than saving it.",
+    "When deciding what to eat, I prioritize immediate taste satisfaction over nutritional value.",
+    "I prioritize immediate physical comfort or pleasure, even when it interferes with achieving my goals.",
+    "When faced with a physically demanding task, I choose immediate comfort.",
+    "I focus on the immediate benefits of my actions without considering how they affect others.",
+    "In social situations, I prioritize what feels fun or rewarding right now over how it impacts others in the long run.",
+    "I prefer to spend my money on immediate pleasures over saving it.",
     "I tend to make purchases for immediate satisfaction without considering my future financial needs.",
-    "When working towards an academic or personal goal, I prefer an easier, immediate option over sustained effort.",
-    "I prefer immediate rewards over the long-term benefits of sustained effort."
+    "When working towards an academic or professional goal, I prefer an easier, immediate option.",
+    "I prefer to see the immediate results my efforts are making rather than wait for them to pay off in the long run."
 ];
 
 // Short UPPS-P (Cyders et al., 2014). Raw answers: 1 = Agree Strongly ... 4 = Disagree Strongly.
