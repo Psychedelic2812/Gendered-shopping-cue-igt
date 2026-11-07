@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="data:,">
+    <title>Researcher Dashboard - Gendered Shopping IGT</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .setup-card { background: #fff; border: 3px solid #232323; border-radius: 16px; box-shadow: 5px 5px 0 #232323; padding: 22px 30px 28px; max-width: 1020px; margin: 0 5px 16px 0; margin-left: auto; margin-right: auto; text-align: left; }
+        .setup-card h2 { font-size: 26px; font-weight: 800; margin: 28px 0 8px; padding-top: 20px; border-top: 2px solid #dedbd4; }
+        .setup-card h2:first-of-type { border-top: none; padding-top: 0; }
+        .setup-card p { font-size: 19px; line-height: 1.5; margin: 6px 0; }
+        .field { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin: 8px 0; }
+        .field label { font-weight: 700; font-size: 19px; min-width: 150px; }
+        .setup-card input[type="text"], .setup-card input[type="password"] { flex: 1; min-width: 260px; font-family: inherit; font-size: 18px; font-weight: 700; padding: 10px 12px; border: 3px solid #dedbd4; border-radius: 10px; background: #f4f1eb; }
+        .setup-card input:focus { outline: none; border-color: #232323; background: #fff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 10px; border-bottom: 2px solid #dedbd4; text-align: left; font-size: 18px; vertical-align: middle; }
+        th { font-size: 16px; text-transform: uppercase; letter-spacing: 1px; color: #4a4a4a; }
+        td.num { font-size: 30px; font-weight: 800; text-align: center; }
+        th.num { text-align: center; }
+        .next { font-weight: 800; background: #f3df91; border-radius: 8px; padding: 4px 10px; display: inline-block; }
+        .summary { margin: 20px 0 8px; padding: 14px 18px; background: #f3df91; border: 3px solid #232323; border-radius: 12px; font-size: 21px; font-weight: 800; }
+        .warn { margin: 10px 0; padding: 14px 18px; background: #fde4e1; border: 3px solid #c0392b; border-radius: 12px; font-weight: 700; font-size: 18px; line-height: 1.45; }
+        .small-btn { padding: 6px 16px; font-size: 18px; box-shadow: 3px 3px 0 #232323; }
+        .buttons { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 20px; }
+        .cond-name { font-size: 24px; font-weight: 800; }
+        td.mono { font-family: Consolas, monospace; font-size: 15px; }
+        tr.removed td { color: #8a8a8a; text-decoration: line-through; }
+        .scroll { max-height: 420px; overflow-y: auto; }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <header class="page-header">
+            <h1>Gendered Shopping IGT</h1>
+            <p>Researcher Dashboard: automatic allocation</p>
+        </header>
+
+        <section class="setup-card">
+            <div class="warn">Researcher page only. Keep this file on your computer. Do NOT upload it to GitHub and never open it for participants.</div>
+
+            <h2>1. Connect</h2>
+            <div class="field"><label for="url">Script address</label><input id="url" type="text" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec"></div>
+            <div class="field"><label for="key">Researcher key</label><input id="key" type="password" autocomplete="off" placeholder="the RESEARCHER_KEY set in the Apps Script"></div>
+            <p>Both are remembered on this computer. The script address is the same one used as SHEET_URL in experiment.js.</p>
+            <div class="buttons"><button id="refresh" type="button">Connect / Refresh</button></div>
+            <div class="warn" id="error" hidden></div>
+
+            <h2>2. How allocation works</h2>
+            <p>After a participant answers the gender question, the Google Sheet script picks the version: <b>Woman = V2 (female cues)</b>, <b>Man = V1 (male cues)</b>. Any other answer goes to whichever variation has fewer participants (remove these in data cleaning). Within each variation the group alternates <b>G1, G2, G1, G2...</b>. The counter lives in the Google Sheet, so it stays balanced on every device.</p>
+
+            <h2>3. Participants allocated so far</h2>
+            <div class="summary" id="summary">Not connected yet</div>
+            <table>
+                <thead>
+                    <tr><th>Variation</th><th>Cues</th><th class="num">Group 1 (good decks)</th><th class="num">Group 2 (bad decks)</th><th>Next group</th></tr>
+                </thead>
+                <tbody id="countRows"></tbody>
+            </table>
+
+            <h2>4. Allocation log</h2>
+            <p>Newest first. "Remove" frees a participant's slot (for example, if they dropped out before finishing); the row stays in the Allocations sheet marked "removed".</p>
+            <div class="scroll">
+                <table>
+                    <thead><tr><th>Participant</th><th>Gender answer</th><th>Condition</th><th>Time</th><th></th></tr></thead>
+                    <tbody id="logRows"></tbody>
+                </table>
+            </div>
+            <div class="buttons"><button id="downloadCsv" type="button" class="secondary">Download log (CSV)</button></div>
+
+            <h2>5. Testing</h2>
+            <p>To try the experiment without affecting the counts, open the participant site with <b>?condition=G1V1&amp;pid=TEST01</b> added to the address (change G1V1 to G1V2, G2V1 or G2V2). Test links force that version and are not counted. Test data is still saved to the sheet, so delete those rows afterwards.</p>
+        </section>
+
+        <footer>Researcher page only. Do not show this page to participants.</footer>
+    </main>
+
+    <script>
+        const DEFAULT_URL = "https://script.google.com/macros/s/AKfycbyJ4h-CdeczhPZWKx0isiOP_u7frQhdRgKbQZt7vlOrOQKxkffJAtaLQ1hiQGWJiIAz/exec";
+        const VARIATIONS = [{ v: "V1", cues: "Male shopping cues (men)" }, { v: "V2", cues: "Female shopping cues (women)" }];
+        const urlBox = document.getElementById("url");
+        const keyBox = document.getElementById("key");
+        let lastLog = [];
+
+        try {
+            urlBox.value = localStorage.getItem("igt_script_url") || DEFAULT_URL;
+            keyBox.value = localStorage.getItem("igt_researcher_key") || "";
+        } catch (e) { urlBox.value = DEFAULT_URL; }
+
+        function showError(text) {
+            const box = document.getElementById("error");
+            box.textContent = text || "";
+            box.hidden = !text;
+        }
+
+        function cell(tr, text, cls) {
+            const td = document.createElement("td");
+            if (cls) td.className = cls;
+            td.textContent = text;
+            tr.appendChild(td);
+            return td;
+        }
+
+        function call(params) {
+            const base = urlBox.value.trim();
+            const key = keyBox.value.trim();
+            if (!base || !key) { showError("Enter the script address and the researcher key first."); return Promise.resolve(null); }
+            try { localStorage.setItem("igt_script_url", base); localStorage.setItem("igt_researcher_key", key); } catch (e) {}
+            const query = Object.keys(params).map(function (k) { return k + "=" + encodeURIComponent(params[k]); }).join("&");
+            return fetch(base + "?" + query + "&key=" + encodeURIComponent(key))
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    if (!res.ok) throw new Error(res.error || "Unknown error");
+                    showError("");
+                    return res;
+                })
+                .catch(function (err) {
+                    showError("Could not load data: " + err.message + ". Check the address, the key, and your internet connection.");
+                    return null;
+                });
+        }
+
+        function render(res) {
+            if (!res) return;
+            let total = 0;
+            const body = document.getElementById("countRows");
+            body.innerHTML = "";
+            VARIATIONS.forEach(function (item) {
+                const c = res.counts[item.v];
+                total += c.G1 + c.G2;
+                const tr = document.createElement("tr");
+                cell(tr, item.v, "cond-name");
+                cell(tr, item.cues);
+                cell(tr, c.G1, "num");
+                cell(tr, c.G2, "num");
+                const td = document.createElement("td");
+                const tag = document.createElement("span");
+                tag.className = "next";
+                tag.textContent = (c.G2 < c.G1 ? "G2" : "G1") + item.v;
+                td.appendChild(tag);
+                tr.appendChild(td);
+                body.appendChild(tr);
+            });
+            document.getElementById("summary").textContent = total + " active participant" + (total === 1 ? "" : "s") + " allocated";
+
+            lastLog = res.log;
+            const logBody = document.getElementById("logRows");
+            logBody.innerHTML = "";
+            res.log.slice().reverse().forEach(function (entry) {
+                const tr = document.createElement("tr");
+                if (entry.status !== "active") tr.className = "removed";
+                cell(tr, entry.participant, "mono");
+                cell(tr, entry.gender);
+                cell(tr, entry.condition, "cond-name");
+                cell(tr, new Date(entry.time).toLocaleString(), "mono");
+                const td = document.createElement("td");
+                if (entry.status === "active") {
+                    const btn = document.createElement("button");
+                    btn.type = "button"; btn.className = "small-btn secondary"; btn.textContent = "Remove";
+                    btn.addEventListener("click", function () {
+                        if (confirm("Remove " + entry.participant + " and free their slot?")) {
+                            call({ action: "remove", pid: entry.participant }).then(render);
+                        }
+                    });
+                    td.appendChild(btn);
+                } else td.textContent = "removed";
+                tr.appendChild(td);
+                logBody.appendChild(tr);
+            });
+        }
+
+        function refresh() { call({ action: "status" }).then(render); }
+
+        document.getElementById("refresh").addEventListener("click", refresh);
+
+        document.getElementById("downloadCsv").addEventListener("click", function () {
+            function q(t) { t = String(t); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }
+            const lines = ["participant,gender_answer,condition,time,status"].concat(lastLog.map(function (e) {
+                return [e.participant, e.gender, e.condition, e.time, e.status].map(q).join(",");
+            }));
+            const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "igt_allocation_log.csv";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        });
+
+        if (keyBox.value) refresh();
+        setInterval(function () { if (keyBox.value && !document.hidden) refresh(); }, 30000);
+    </script>
+</body>
+</html>
