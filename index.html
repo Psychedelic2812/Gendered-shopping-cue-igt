@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#eaf0f8">
+    <link rel="icon" href="data:,">
+    <title>Consumer Behaviour Study</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Tip shown only on phones held upright, on the card task screen */
+        .rotate-hint { display: none; margin: 0 0 8px; padding: 8px 12px; background: #b8ece9; border-radius: 8px; font-weight: bold; font-size: 15px; }
+        @media (max-width: 600px) and (orientation: portrait) { .rotate-hint { display: block; } }
+        .noscript-box { max-width: 700px; margin: 40px auto; padding: 20px; background: #fde4e1; border: 3px solid #c0392b; border-radius: 10px; font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+    <noscript>
+        <div class="noscript-box">This study needs JavaScript. Please turn JavaScript on in your browser settings, or open this link in a different browser, then reload the page.</div>
+    </noscript>
+
+    <!-- ===== Loading overlay (shown while the study server assigns the version) ===== -->
+    <div id="loader" class="loader" role="status" aria-live="polite" hidden>
+        <div class="loader-box">
+            <div class="spinner" aria-hidden="true"></div>
+            <p class="loader-title" id="loaderTitle">Preparing your session</p>
+            <p class="loader-sub">This can take a few seconds. Please keep this page open.</p>
+        </div>
+    </div>
+
+    <main class="container">
+
+        <!-- ===== Link without a version ===== -->
+        <section class="screen" id="screen-invalid" hidden>
+            <div class="doc-card">
+                <h1>This link is not complete</h1>
+                <p class="lead">Please contact the researcher who invited you and ask for your personal study link.</p>
+            </div>
+        </section>
+
+        <!-- ===== Information sheet ===== -->
+        <section class="screen" id="screen-info" hidden>
+            <header class="page-header">
+                <h1>Participant Information</h1>
+                <p>Please read this sheet carefully before deciding whether to take part.</p>
+            </header>
+
+            <div class="doc-card">
+                <p class="lead">Thank you for your interest in this study.</p>
+
+                <h2>What is this study about?</h2>
+                <p>We are interested in studying <strong>consumer behaviour in young adults</strong>.</p>
+
+                <h2>Who is running it?</h2>
+                <p>This study is being done by the students of <strong>Master of Arts (Psychology), University of Delhi</strong>, as part of the Human Cognition practical (Practical Group 1, Subgroup 1), under the supervision of <strong>Dr. Dinesh Chhabra</strong>.</p>
+
+                <h2>What will you be asked to do?</h2>
+                <ol class="steps">
+                    <li><strong>Understanding the Task.</strong> You will see <strong>four decks of cards</strong> labelled A, B, C, and D on the computer screen. Your task is to select cards from these decks to <strong>earn as much virtual money as possible</strong>.</li>
+                    <li><strong>Selecting a Card.</strong> You may begin by selecting a card from any one of the four decks. You are free to choose whichever deck you prefer. To draw a card from that deck, you will tap on <strong>Play</strong>. To select a different deck you will tap on <strong>Pass</strong>.</li>
+                    <li><strong>Understanding Gains and Losses.</strong> Each time you select a card, you will receive a <strong>monetary gain</strong>. However, some selections may also result in a <strong>monetary loss</strong>. The amounts gained or lost may vary between selections.</li>
+                    <li><strong>Observing the Feedback.</strong> After each selection, the computer will display the <strong>outcome of your choice</strong> and your <strong>updated virtual monetary balance</strong>. Pay attention to this information while making subsequent decisions.</li>
+                    <li><strong>Viewing the Pictures.</strong> Different pictures will appear on the card decks throughout the task. These pictures are part of the activity. <strong>You do not need to evaluate the pictures</strong> or respond to them separately.</li>
+                    <li><strong>Continuing Your Selections.</strong> You may continue selecting cards from the same deck or switch to another deck at any point. There is <strong>no fixed order</strong> in which the decks must be selected.</li>
+                    <li><strong>Maximizing Your Earnings.</strong> Your objective is to <strong>earn as much virtual money as possible</strong> by the end of the task. Make your decisions <strong>independently</strong>, using the feedback from previous selections as you consider appropriate.</li>
+                    <li><strong>Completing the Task.</strong> Continue selecting cards until the computer indicates that the task is complete. The money used in this activity is <strong>hypothetical</strong>; you will <strong>not gain or lose any actual money</strong>.</li>
+                </ol>
+
+                <h2>How long will it take?</h2>
+                <p>The session will take approximately <strong>25 minutes</strong>.</p>
+
+                <h2>Do you have to take part?</h2>
+                <p>No. Taking part is entirely <strong>voluntary</strong>. You may <strong>stop at any time</strong>, without giving a reason and without any penalty, simply by telling the researcher or closing the window.</p>
+
+                <h2>Are there any risks?</h2>
+                <p>There are <strong>no known risks</strong> beyond the mild eye strain that can come from any screen-based task.</p>
+
+                <h2>What happens to your data?</h2>
+                <p>Your responses are recorded <strong>anonymously</strong>. You will be asked to write a participant ID, wherein you can write your <strong>pseudo (or false) name</strong> or can <strong>leave the column blank</strong> for the system to generate a Participant ID for you. Data, so collected, will be stored securely in a <strong>password-protected online database</strong>, accessible only to the research team, and used <strong>only for academic purposes</strong>, including class reports and possible publication, in a form that <strong>cannot identify you</strong>. Post the completion of the study, the data will be <strong>permanently deleted</strong> from our systems.</p>
+
+                <h2>Will you be told the full aim of the study?</h2>
+                <p>Yes. At the end of the session we will explain the study in full and answer any questions. Some details are kept general until then so that they do not influence how you perform the task.</p>
+
+                <h2>Questions?</h2>
+                <p>Please ask the researcher now, or contact <strong>deepalithakur2812@gmail.com</strong> or <strong>tanisha6951@gmail.com</strong> at any time.</p>
+
+                <div class="actions">
+                    <button id="infoContinue" type="button">Continue to consent form</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Consent form ===== -->
+        <section class="screen" id="screen-consent" hidden>
+            <header class="page-header">
+                <h1>Consent Form</h1>
+                <p>Please read each statement carefully and tick the box beside it.</p>
+            </header>
+
+            <div class="doc-card">
+                <p class="lead">You can continue only if <strong>every box is ticked</strong>.</p>
+                <div class="consent-list" id="consentList">
+                    <label class="check"><input type="checkbox"><span>I have read the information sheet and have understood what the study involves.</span></label>
+                    <label class="check"><input type="checkbox"><span>I have had the chance to ask the questions to the research team.</span></label>
+                    <label class="check"><input type="checkbox"><span>I understand that my responses will be kept <strong>anonymous</strong> and will only be used for <strong>academic purposes</strong>.</span></label>
+                    <label class="check"><input type="checkbox"><span>I understand that participation is <strong>voluntary</strong>.</span></label>
+                    <label class="check"><input type="checkbox"><span>I confirm that I am <strong>18 years of age or older</strong>.</span></label>
+                    <label class="check"><input type="checkbox"><span>I give consent to participate in this study.</span></label>
+                </div>
+
+                <div class="actions">
+                    <button id="consentYes" type="button" disabled>I consent, continue</button>
+                    <button id="consentNo" type="button" class="secondary">I don't wish to participate, exit</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Demographics ===== -->
+        <section class="screen" id="screen-demographics" hidden>
+            <header class="page-header">
+                <h1>About You</h1>
+                <p>Please answer every question. Your answers are anonymous.</p>
+            </header>
+
+            <form class="doc-card" id="demographicsForm" novalidate>
+                <div id="demographicsFields"></div>
+                <p class="form-error" id="demographicsError" role="alert" hidden></p>
+                <div class="actions">
+                    <button id="demographicsContinue" type="submit">Continue</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ===== IGT task (instructions, task and feedback) ===== -->
+        <section class="screen" id="screen-task" hidden>
+            <header class="page-header">
+                <h1>Card Task</h1>
+                <p>Play or Pass</p>
+            </header>
+
+            <p class="rotate-hint">Tip: turn your phone sideways for the best view.</p>
+
+            <section class="status-bar">
+                <div>
+                    <span>Trial</span>
+                    <strong id="trialNumber">-</strong>
+                </div>
+
+                <div>
+                    <span>Balance</span>
+                    <strong id="balance">₹50,000</strong>
+                </div>
+            </section>
+
+            <p id="previewMessage" role="status" aria-live="polite">
+                Click Start to begin.
+            </p>
+
+            <section class="instructions">
+                <p id="instructionsText"></p>
+            </section>
+
+            <section class="deck-area" aria-label="Four decks">
+                <div class="deck" data-deck="1">
+                    <div class="arrow" aria-hidden="true">▼</div>
+                    <div class="deck-image"><span>Image 1</span></div>
+                    <h2>Deck 1</h2>
+                </div>
+
+                <div class="deck" data-deck="2">
+                    <div class="arrow" aria-hidden="true">▼</div>
+                    <div class="deck-image"><span>Image 2</span></div>
+                    <h2>Deck 2</h2>
+                </div>
+
+                <div class="deck" data-deck="3">
+                    <div class="arrow" aria-hidden="true">▼</div>
+                    <div class="deck-image"><span>Image 3</span></div>
+                    <h2>Deck 3</h2>
+                </div>
+
+                <div class="deck" data-deck="4">
+                    <div class="arrow" aria-hidden="true">▼</div>
+                    <div class="deck-image"><span>Image 4</span></div>
+                    <h2>Deck 4</h2>
+                </div>
+            </section>
+
+            <section class="controls">
+                <button id="startButton" type="button">Start</button>
+                <button id="playButton" type="button" hidden>Play (A)</button>
+                <button id="passButton" type="button" hidden>Pass (L)</button>
+                <button id="continueButton" type="button" hidden>Continue to the final questions</button>
+            </section>
+        </section>
+
+        <!-- ===== Adapted Immediate Gratification Inventory ===== -->
+        <section class="screen" id="screen-igi" hidden>
+            <header class="page-header">
+                <h1>Final Questions</h1>
+                <p>Please rate how much you agree with each statement.</p>
+            </header>
+
+            <form class="doc-card" id="igiForm" novalidate>
+                <p class="lead"><strong>1</strong> = Strongly Disagree &nbsp;&nbsp;…&nbsp;&nbsp; <strong>5</strong> = Strongly Agree</p>
+                <div id="igiItems"></div>
+                <p class="form-error" id="igiError" role="alert" hidden></p>
+                <div class="actions">
+                    <button id="igiSubmit" type="submit">Continue</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ===== Short UPPS-P ===== -->
+        <section class="screen" id="screen-upps" hidden>
+            <header class="page-header">
+                <h1>Final Questions (continued)</h1>
+                <p>Below are statements that describe ways in which people act and think.</p>
+            </header>
+
+            <form class="doc-card" id="uppsForm" novalidate>
+                <p class="lead">For each statement, choose how much you agree or disagree. Please answer every statement.</p>
+                <p><strong>1</strong> = Agree Strongly &nbsp;&nbsp; <strong>2</strong> = Agree Somewhat &nbsp;&nbsp; <strong>3</strong> = Disagree Somewhat &nbsp;&nbsp; <strong>4</strong> = Disagree Strongly</p>
+                <div id="uppsItems"></div>
+                <p class="form-error" id="uppsError" role="alert" hidden></p>
+                <div class="actions">
+                    <button id="uppsSubmit" type="submit">Finish</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ===== End / exit ===== -->
+        <section class="screen" id="screen-end" hidden>
+            <div class="doc-card">
+                <h1 id="endTitle">Thank you!</h1>
+                <p class="lead" id="endText"></p>
+                <p id="saveStatus" role="status" aria-live="polite"></p>
+                <div class="actions">
+                    <button id="retryButton" type="button" hidden>Retry saving</button>
+                    <button id="backupButton" type="button" class="secondary" hidden>Download backup (CSV)</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>Your responses are anonymous and used only for academic purposes.</footer>
+    </main>
+
+    <script src="experiment.js"></script>
+    <script src="flow.js"></script>
+</body>
+</html>
